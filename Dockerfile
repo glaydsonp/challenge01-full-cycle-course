@@ -1,5 +1,17 @@
-FROM golang:1.19
+FROM golang as build
 
-COPY *.go ./
+WORKDIR /app
 
-CMD [ "go", "run", "desafio01.go" ]
+COPY . .
+
+RUN go env -w GO111MODULE=off
+
+RUN go build -o /desafio01
+
+FROM scratch
+
+WORKDIR /app
+
+COPY --from=build ./desafio01 ./desafio01
+
+CMD [ "/app/desafio01" ]
